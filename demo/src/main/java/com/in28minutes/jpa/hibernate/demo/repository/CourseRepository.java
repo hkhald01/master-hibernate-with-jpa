@@ -1,5 +1,7 @@
 package com.in28minutes.jpa.hibernate.demo.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.in28minutes.jpa.hibernate.demo.entity.Course;
+import com.in28minutes.jpa.hibernate.demo.entity.Review;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,5 +56,42 @@ public class CourseRepository {
     log.info("course 1 refreshed -> {}", course1);
 
     em.flush();
+  }
+
+  public void addReviewsForCourse() {
+    // get the course 10003
+    Course course = findById(10003L);
+    log.info("reviews -> {}", course.getReviews());
+    // add 2 reviews
+    Review review1 = new Review("5", "Great Hands-on Stuff");
+    Review review2 = new Review("5", "Hats off");
+
+    course.addReview(review1);
+    review1.setCourse(course);
+    course.addReview(review2);
+    review2.setCourse(course);
+
+    // save it to database
+
+    em.persist(review1);
+    em.persist(review2);
+  }
+
+  public void addReviewsForCourse(Long id, List<Review> reviews) {
+
+    Course course = findById(id);
+
+    for (Review review : reviews) {
+      course.addReview(review);
+      review.setCourse(course);
+      em.persist(review);
+    }
+  }
+
+  public void addReviewPerCourse(Course course, Review review) {
+    course.getReviews().add(review);
+    course.setReviews(course.getReviews());
+    review.setCourse(course);
+    em.persist(review);
   }
 }
