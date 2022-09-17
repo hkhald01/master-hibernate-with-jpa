@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.in28minutes.jpa.hibernate.demo.entity.Course;
+import com.in28minutes.jpa.hibernate.demo.entity.Student;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,10 +35,9 @@ public class JPQLTest {
   }
 
   @Test
-  public void jpqlQueryCoursesByTypeWhereCLause() {
+  public void jpqlQueryCoursesByTypeWhereClause() {
     List<Course> resultList =
-        em.createQuery("Select c from Course c where name like '%100 Steps'", Course.class)
-            .getResultList();
+        em.createNamedQuery("query_get_100_Steps_courses", Course.class).getResultList();
     log.info("Select c from Course c where name like '%100 Steps' -> {}", resultList);
   }
 
@@ -70,9 +70,80 @@ public class JPQLTest {
   @Test
   @Transactional
   public void nativeQueryCoursesByTypeUpdate() {
-    Query query = em.createNativeQuery("Update COURSE set last_updated_date = current_date()");
+    Query query = em.createNativeQuery("Update COURSE set last_updated_date = CURRENT_TIMESTAMP()");
     // we can't find the number of rows updated with jpa
     int numberOfRowsUpdated = query.executeUpdate();
     log.info("Native Query Number Of Rows Updated-> {}", numberOfRowsUpdated);
+  }
+  // section-10
+
+  @Test
+  public void jpqlQueryCoursesWithoutStudents() {
+    List<Course> resultList =
+        em.createQuery("select c from Course c where c.students is empty ", Course.class)
+            .getResultList();
+    log.info("Select c from Course c where students is empty -> {}", resultList);
+  }
+
+  @Test
+  public void jpqlQueryCoursesWith_at_least_2_Students() {
+    List<Course> resultList =
+        em.createQuery("select c from Course c where size(c.students) >=2 ", Course.class)
+            .getResultList();
+    log.info("Select c from Course c where students >-2 -> {}", resultList);
+  }
+
+  @Test
+  public void jpqlQueryCourses_order_by_desc_Students() {
+    List<Course> resultList =
+        em.createQuery("select c from Course c order by size(c.students) desc", Course.class)
+            .getResultList();
+    log.info("Select c from Course c orderby students size -> {}", resultList);
+  }
+
+  @Test
+  public void jpql_query_students_with_passport_in_a_certain_pattern() {
+    List<Student> resultList =
+        em.createQuery(
+                "select s from Student s where s.passport.number like '%1234%' ", Student.class)
+            .getResultList();
+    log.info("select s from Student s where s.passport.number like '%1234' -> {}", resultList);
+  }
+  // like
+  // between 100 and 1000
+  // is null
+  // upper, lower, trim, length
+
+  // join       => select c,s from Course c JOIN c.students s
+  // left join  => select c,s from Course c LEFT JOIN c.students s
+  // cross join => select c,s from Course c , Student s
+  @Test
+  public void join() {
+    Query query = em.createQuery("select c, s from Course c JOIN c.students s");
+    List<Object[]> resultList = query.getResultList();
+    log.info("join result -> {} ", resultList.size());
+    for (Object[] result : resultList) {
+      log.info("{} {}", result[0], result[1]);
+    }
+  }
+
+  @Test
+  public void left_join() {
+    Query query = em.createQuery("select c, s from Course c LEFT JOIN c.students s");
+    List<Object[]> resultList = query.getResultList();
+    log.info("join result -> {} ", resultList.size());
+    for (Object[] result : resultList) {
+      log.info("{} {}", result[0], result[1]);
+    }
+  }
+
+  @Test
+  public void cross_join() {
+    Query query = em.createQuery("select c, s from Course c, Student s");
+    List<Object[]> resultList = query.getResultList();
+    log.info("join result -> {} ", resultList.size());
+    for (Object[] result : resultList) {
+      log.info("{} {}", result[0], result[1]);
+    }
   }
 }

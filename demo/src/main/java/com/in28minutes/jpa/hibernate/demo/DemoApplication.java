@@ -1,6 +1,5 @@
 package com.in28minutes.jpa.hibernate.demo;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +12,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.in28minutes.jpa.hibernate.demo.entity.Course;
-import com.in28minutes.jpa.hibernate.demo.entity.FullTimeEmployee;
-import com.in28minutes.jpa.hibernate.demo.entity.PartTimeEmployee;
 import com.in28minutes.jpa.hibernate.demo.entity.Passport;
 import com.in28minutes.jpa.hibernate.demo.entity.Review;
 import com.in28minutes.jpa.hibernate.demo.entity.Student;
@@ -55,11 +52,17 @@ public class DemoApplication implements CommandLineRunner {
     //    Course course = new Course("Microservices in 100 Steps");
     //    studentRepository.insertStudentAndCourse(student, course);
     init();
-    employeeRepository.insert(new PartTimeEmployee("Jill", new BigDecimal("50")));
-    employeeRepository.insert(new FullTimeEmployee("Jack", new BigDecimal("10000")));
+
+    // section-6
+
+    //    employeeRepository.insert(new PartTimeEmployee("Jill", new BigDecimal("50")));
+    //    employeeRepository.insert(new FullTimeEmployee("Jack", new BigDecimal("10000")));
     //    log.info("all employees -> {}", employeeRepository.getAllEmployees());
-    log.info("all full time employees -> {}", employeeRepository.getAllFullTimeEmployees());
-    log.info("all part time employees -> {}", employeeRepository.getAllPartTimeEmployees());
+    //    log.info("all full time employees -> {}", employeeRepository.getAllFullTimeEmployees());
+    //    log.info("all part time employees -> {}", employeeRepository.getAllPartTimeEmployees());
+
+    // section-10
+
   }
 
   @Transactional
@@ -121,7 +124,19 @@ public class DemoApplication implements CommandLineRunner {
     course1.addStudent(student1);
     student1.addCourse(course1);
 
+    course1.addStudent(student2);
+    student2.addCourse(course1);
+
+    course1.addStudent(student3);
+    student3.addCourse(course1);
+
+    course3.addStudent(student1);
+    student1.addCourse(course3);
+
     courseRepository.save(course1);
+    courseRepository.save(course3);
     studentRepository.save(student1);
+    studentRepository.save(student2);
+    studentRepository.save(student3);
   }
 }

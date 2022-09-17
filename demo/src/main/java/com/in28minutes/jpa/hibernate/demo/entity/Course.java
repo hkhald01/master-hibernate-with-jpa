@@ -19,6 +19,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
@@ -44,6 +46,7 @@ public class Course {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIdentityReference
   private Long id;
 
   @Column(nullable = false)
@@ -60,7 +63,7 @@ public class Course {
   @ToString.Exclude
   // @JsonBackReference
   @ManyToMany(mappedBy = "courses")
-  // @JsonIgnore
+  @JsonIgnore
   private List<Student> students =
       new ArrayList<>(); // in the Owner Student entity I am  mappedBy courses
 
