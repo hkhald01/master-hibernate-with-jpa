@@ -14,20 +14,23 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,7 +44,9 @@ import lombok.ToString;
       name = "query_get_100_Steps_courses",
       query = "Select c from Course c where name like'%100 Steps'")
 })
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@SQLDelete(sql = "update course set is_deleted = true where id - ?")
+@Where(clause = "is_deleted = false")
 public class Course {
 
   @Id
@@ -73,6 +78,8 @@ public class Course {
   @CreationTimestamp // hibernate annotation not jpa
   private LocalDateTime lastUpdatedDate;
 
+  private boolean isDeleted;
+
   public Course(String name) {
     this.name = name;
   }
@@ -81,6 +88,7 @@ public class Course {
     this.name = name;
     this.createdDate = createdDate;
     this.lastUpdatedDate = lastUpdatedDate;
+    // this.isDeleted = isDeleted;
   }
 
   public void addReview(Review review) {
@@ -97,5 +105,11 @@ public class Course {
 
   public void removeStudent(Student student) {
     this.students.remove(student);
+  }
+
+  @PreRemove
+  private void preRemove() {
+    log.info("Setting isDeleted");
+    this.isDeleted = true;
   }
 }

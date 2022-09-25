@@ -28,8 +28,19 @@ public class CourseRepositoryTest {
   @Test
   @DirtiesContext
   public void deleteCourseById_basic() {
-    courseRepository.deleteById(10002L);
-    assertNull(courseRepository.findById(10002L));
+    courseRepository.deleteById(10010L);
+    assertNull(courseRepository.findById(10010L));
+  }
+
+  @Test
+  @DirtiesContext
+  public void softDeleteCourseById_basic() {
+    courseRepository.deleteById(10010L);
+    assertEquals(true, courseRepository.findById(10010L).isDeleted());
+    //	  courseRepository.deleteById(4L);
+    //	    Course deleted = courseRepository.findById(4L);
+    //	    log.info("Deleted {}", deleted);
+    //	    // assertTrue(courseRepository.findById(4L).isDeleted());
   }
 
   @Test

@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.in28minutes.jpa.hibernate.demo.entity.Course;
 import com.in28minutes.jpa.hibernate.demo.entity.Passport;
 import com.in28minutes.jpa.hibernate.demo.entity.Review;
+import com.in28minutes.jpa.hibernate.demo.entity.ReviewRating;
 import com.in28minutes.jpa.hibernate.demo.entity.Student;
 import com.in28minutes.jpa.hibernate.demo.repository.CourseRepository;
 import com.in28minutes.jpa.hibernate.demo.repository.EmployeeRepository;
@@ -74,9 +75,9 @@ public class DemoApplication implements CommandLineRunner {
         new Course("Spring Boot in 100 Step", LocalDateTime.now(), LocalDateTime.now());
     List<Course> courses = Arrays.asList(course1, course2, course3);
 
-    Review review1 = new Review("5", "Great Course");
-    Review review2 = new Review("4", "Wonderful Course");
-    Review review3 = new Review("5", "Awesome Course");
+    Review review1 = new Review(ReviewRating.FIVE, "Great Course");
+    Review review2 = new Review(ReviewRating.FOUR, "Wonderful Course");
+    Review review3 = new Review(ReviewRating.FIVE, "Awesome Course");
 
     course1.addReview(review1);
     review1.setCourse(course1);

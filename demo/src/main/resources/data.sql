@@ -2,7 +2,7 @@
 -- insert into course (id, name, created_date, last_updated_date) values (10002, 'Spring in 50 Steps', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
 -- insert into course (id, name, created_date, last_updated_date) values (10003, 'Spring Boot in 100 Steps', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
 
-insert into course (id, name, created_date, last_updated_date) values (10010, 'Microservices in 100 Steps', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+ insert into course (id, name, created_date, last_updated_date, is_deleted) values (10010, 'Microservices in 100 Steps', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(),false);
 
 -- insert into passport (id, number) values(40001,'E123456');
 -- insert into passport (id, number) values(40002,'N123457');

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.in28minutes.jpa.hibernate.demo.entity.Address;
 import com.in28minutes.jpa.hibernate.demo.entity.Passport;
 import com.in28minutes.jpa.hibernate.demo.entity.Student;
 
@@ -37,6 +38,17 @@ public class StudentRepositoryTest {
     Student student = em.find(Student.class, 20001L);
     log.info("Student -> {}", student);
     log.info("Passport info -> {}", student.getPassport());
+  }
+
+  @Test
+  @Transactional
+  public void setAddressStudent() {
+
+    Student student = em.find(Student.class, 10L);
+    student.setAddress(new Address("123 street", "apt 1", "warren"));
+    em.persist(student);
+    log.info("Student -> {}", student);
+    log.info("Passport info -> {}", student.getAddress());
   }
 
   @Test
